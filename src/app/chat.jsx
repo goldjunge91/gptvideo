@@ -8,8 +8,8 @@ import mergeImages from "merge-images";
 import { useLocalStorage } from "../lib/use-local-storage";
 
 const INTERVAL = 250;
-const IMAGE_WIDTH = 512;
-const IMAGE_QUALITY = 0.6;
+const IMAGE_WIDTH = 720;
+const IMAGE_QUALITY = 0.7;
 const COLUMNS = 4;
 const MAX_SCREENSHOTS = 60;
 const SILENCE_DURATION = 2500;
@@ -315,120 +315,120 @@ export default function Chat() {
     }
   }, [currentVolume, audio.isRecording]);
 
-  const lastAssistantMessage = messages
-    .filter((it) => it.role === "assistant")
-    .pop();
+    const lastAssistantMessage = messages
+      .filter((it) => it.role === "assistant")
+      .pop();
 
-  return (
-    <>
-      <canvas ref={canvasRef} style={{ display: "none" }} />
-      <div className="antialiased w-screen h-screen p-4 flex flex-col justify-center items-center bg-black">
-        <div className="w-full h-full sm:container sm:h-auto grid grid-rows-[auto_1fr] grid-cols-[1fr] sm:grid-cols-[2fr_1fr] sm:grid-rows-[1fr] justify-content-center bg-black">
-          <div className="relative">
-            <video
-              ref={videoRef}
-              className="h-auto w-full aspect-[4/3] object-cover rounded-[1rem] bg-gray-900"
-              autoPlay
-            />
-            {audio.isRecording ? (
-              <div className="w-16 h-16 absolute bottom-4 left-4 flex justify-center items-center">
-                <div
-                  className="w-16 h-16 bg-red-500 opacity-50 rounded-full"
-                  style={{
-                    transform: `scale(${Math.pow(volumePercentage, 4).toFixed(
-                      4
-                    )})`,
-                  }}
-                ></div>
-              </div>
+    return (
+      <>
+        <canvas ref={canvasRef} style={{ display: "none" }} />
+        <div className="antialiased w-screen h-screen p-4 flex flex-col justify-center items-center bg-black">
+          <div className="w-full h-full sm:container sm:h-auto grid grid-rows-[auto_1fr] grid-cols-[1fr] sm:grid-cols-[2fr_1fr] sm:grid-rows-[1fr] justify-content-center bg-black">
+            <div className="relative">
+              <video
+                ref={videoRef}
+                className="h-auto w-full aspect-[4/3] object-cover rounded-[1rem] bg-gray-900"
+                autoPlay
+              />
+              {audio.isRecording ? (
+                <div className="w-16 h-16 absolute bottom-4 left-4 flex justify-center items-center">
+                  <div
+                    className="w-16 h-16 bg-red-500 opacity-50 rounded-full"
+                    style={{
+                      transform: `scale(${Math.pow(volumePercentage, 4).toFixed(
+                        4
+                      )})`,
+                    }}
+                  ></div>
+                </div>
+              ) : (
+                <div className="w-16 h-16 absolute bottom-4 left-4 flex justify-center items-center cursor-pointer">
+                  <div className="text-5xl text-red-500 opacity-50">⏸</div>
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-center p-12 text-md leading-relaxed relative">
+              {lastAssistantMessage?.content}
+              {isLoading && (
+                <div className="absolute left-50 top-50 w-8 h-8 ">
+                  <div className="w-6 h-6 -mr-3 -mt-3 rounded-full bg-cyan-500 animate-ping" />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center p-4 opacity-50 gap-2">
+            {isStarted ? (
+              <button
+                className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
+                onClick={stopRecording}
+              >
+                Stop session
+              </button>
             ) : (
-              <div className="w-16 h-16 absolute bottom-4 left-4 flex justify-center items-center cursor-pointer">
-                <div className="text-5xl text-red-500 opacity-50">⏸</div>
-              </div>
+              <button
+                className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
+                onClick={startRecording}
+              >
+                Start session
+              </button>
             )}
-          </div>
-          <div className="flex items-center justify-center p-12 text-md leading-relaxed relative">
-            {lastAssistantMessage?.content}
-            {isLoading && (
-              <div className="absolute left-50 top-50 w-8 h-8 ">
-                <div className="w-6 h-6 -mr-3 -mt-3 rounded-full bg-cyan-500 animate-ping" />
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-wrap justify-center p-4 opacity-50 gap-2">
-          {isStarted ? (
             <button
               className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-              onClick={stopRecording}
+              onClick={() => reload()}
             >
-              Stop session
+              Regenerate
             </button>
-          ) : (
             <button
               className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-              onClick={startRecording}
+              onClick={() => setDisplayDebug((p) => !p)}
             >
-              Start session
+              Debug
             </button>
-          )}
-          <button
-            className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-            onClick={() => reload()}
-          >
-            Regenerate
-          </button>
-          <button
-            className="px-4 py-2 bg-gray-700 rounded-md disabled:opacity-50"
-            onClick={() => setDisplayDebug((p) => !p)}
-          >
-            Debug
-          </button>
-          <input
-            type="password"
-            className="px-4 py-2 bg-gray-700 rounded-md"
-            value={token}
-            placeholder="OpenAI API key"
-            onChange={(e) => setToken(e.target.value)}
-          />
-          <input
-            className="px-4 py-2 bg-gray-700 rounded-md"
-            value={lang}
-            placeholder="Optional language code"
-            onChange={(e) => setLang(e.target.value)}
-          />
-        </div>
-      </div>
-      <div
-        className={`bg-[rgba(20,20,20,0.8)] backdrop-blur-xl p-8 rounded-sm absolute left-0 top-0 bottom-0 transition-all w-[75vw] sm:w-[33vw] ${
-          displayDebug ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div
-          className="absolute z-10 top-4 right-4 opacity-50 cursor-pointer"
-          onClick={() => setDisplayDebug(false)}
-        >
-          ⛌
-        </div>
-        <div className="space-y-8">
-          <div className="space-y-2">
-            <div className="font-semibold opacity-50">Phase:</div>
-            <p>{phase}</p>
-          </div>
-          <div className="space-y-2">
-            <div className="font-semibold opacity-50">Transcript:</div>
-            <p>{transcription || "--"}</p>
-          </div>
-          <div className="space-y-2">
-            <div className="font-semibold opacity-50">Captures:</div>
-            <img
-              className="object-contain w-full border border-gray-500"
-              alt="Grid"
-              src={imagesGridUrl || transparentPixel}
+            <input
+              type="password"
+              className="px-4 py-2 bg-gray-700 rounded-md"
+              value={token}
+              placeholder="OpenAI API key"
+              onChange={(e) => setToken(e.target.value)}
+            />
+            <input
+              className="px-4 py-2 bg-gray-700 rounded-md"
+              value={lang}
+              placeholder="Optional language code"
+              onChange={(e) => setLang(e.target.value)}
             />
           </div>
         </div>
-      </div>
-    </>
-  );
-}
+        <div
+          className={`bg-[rgba(20,20,20,0.8)] backdrop-blur-xl p-8 rounded-sm absolute left-0 top-0 bottom-0 transition-all w-[75vw] sm:w-[33vw] ${
+            displayDebug ? "translate-x-0" : "-translate-x-full"
+          }`}
+        >
+          <div
+            className="absolute z-10 top-4 right-4 opacity-50 cursor-pointer"
+            onClick={() => setDisplayDebug(false)}
+          >
+            ⛌
+          </div>
+          <div className="space-y-8">
+            <div className="space-y-2">
+              <div className="font-semibold opacity-50">Phase:</div>
+              <p>{phase}</p>
+            </div>
+            <div className="space-y-2">
+              <div className="font-semibold opacity-50">Transcript:</div>
+              <p>{transcription || "--"}</p>
+            </div>
+            <div className="space-y-2">
+              <div className="font-semibold opacity-50">Captures:</div>
+              <img
+                className="object-contain w-full border border-gray-500"
+                alt="Grid"
+                src={imagesGridUrl || transparentPixel}
+              />
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }

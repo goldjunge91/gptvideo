@@ -1,29 +1,29 @@
 # GPT Video - Reproducing the Gemini demo using GPT 4 Vision
 
-![Screenshot of the App](/screenshot.jpg)
-
 ## 🌌 Overview
 
 After seeing the 'gemini' video, I asked myself: Could the 'gemini' experience showcased by Google be more than just a scripted demo?
 This project is a fun experiment to explore the feasibility of real-time AI interactions similar to those portrayed in 'gemini'.
 
-[See detailed explanation in this article](https://medium.com/p/fc559c38bd24)
-
 ## ✨ Demo
 
-https://gpt-video-jidefr.vercel.app
-
-You'll need an OpenAI API key. Remember to delete the API key after using it sor safety.
-
-## 🛠 Stack
-
-- Next.js with App Router.
-- Vercel AI npm module.
-- OpenAI's Whisper and GPT APIs.
 
 ## 🚀 Getting Started
 
 You can provide the `OPENAI_API_KEY`` environment variable or let the user provide its own API key in the UI.
+### Setup process
+'
+* befor install:* 
+    Miniconda
+    Flutter
+    Node.js (windows nvm)
+'
+then new folder 
+`npx create-next-app@latest --ts --tailwind --eslint
+    >`Name: "gpt-vision"
+    >`yes/yes/No`y
+    >`cd "app name  "`
+    >`npm install ai openai silence-aware-recorder @wmik/use-media-recorder merge-images --force`
 
 First, run the development server:
 
